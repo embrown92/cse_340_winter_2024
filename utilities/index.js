@@ -11,7 +11,7 @@ Util.getNav = async function (req, res, next) {
   data.rows.forEach((row) => {
     list += "<li>"
     list +=
-      '<a href="/inv/type/' +
+      '<a href="/inv/type/#' +
       row.classification_id +
       '" title="See our inventory of ' +
       row.classification_name +
@@ -52,3 +52,36 @@ Line 25 - the closing HTML unordered list tag being appended to the list variabl
 Line 26 - sends the finished string, back to where the getNav function was called.
 Line 27 - ends the function which started on line 7.
  * *********************** */
+
+/* **************************************
+* Build the classification view HTML
+* ************************************ */
+Util.buildClassificationGrid = async function(data){
+  let grid
+  if(data.length > 0){
+    grid = '<ul id="inv-display">'
+    data.forEach(vehicle => { 
+      grid += '<li>'
+      grid +=  '<a href="../../inv/detail/'+ vehicle.inv_id 
+      + '" title="View ' + vehicle.inv_make + ' '+ vehicle.inv_model 
+      + 'details"><img src="' + vehicle.inv_thumbnail 
+      +'" alt="Image of '+ vehicle.inv_make + ' ' + vehicle.inv_model 
+      +' on CSE Motors" /></a>'
+      grid += '<div class="namePrice">'
+      grid += '<hr />'
+      grid += '<h2>'
+      grid += '<a href="../../inv/detail/' + vehicle.inv_id +'" title="View ' 
+      + vehicle.inv_make + ' ' + vehicle.inv_model + ' details">' 
+      + vehicle.inv_make + ' ' + vehicle.inv_model + '</a>'
+      grid += '</h2>'
+      grid += '<span>$' 
+      + new Intl.NumberFormat('en-US').format(vehicle.inv_price) + '</span>'
+      grid += '</div>'
+      grid += '</li>'
+    })
+    grid += '</ul>'
+  } else { 
+    grid += '<p class="notice">Sorry, no matching vehicles could be found.</p>'
+  }
+  return grid
+}

@@ -3,11 +3,11 @@ const pool = require("../database/")
 /* ***************************
  *  Get all classification data
  * ************************** */
-async function getClassifications(){
+async function getClassifications() {
   return await pool.query("SELECT * FROM public.classification ORDER BY classification_name")
 }
 
-module.exports = {getClassifications}
+module.exports = { getClassifications }
 
 /**********************
 An Explanation
@@ -29,5 +29,24 @@ Line 7 - will return (send back) the result of the SQL query, which will be sent
 Line 8 - ends the function began on line 6.
 Line 9 - left intentionally blank.
 Line 10 - exports the function for use elsewhere. 
-
 ********************** */
+
+/* ***************************
+ *  Get all inventory items and classification_name by classification_id
+ * ************************** */
+async function getInventoryByClassificationId(classification_id) {
+  try {
+    const data = await pool.query(
+      `SELECT * FROM inventory AS i 
+        JOIN classification AS c 
+        ON i.classification_id = c.classification_id 
+        WHERE i.classification_id = $1`,
+      [classification_id]
+    )
+    return data.rows
+  } catch (error) {
+    console.error("getclassificationsbyid error " + error)
+  }
+}
+
+module.exports = { getClassifications, getInventoryByClassificationId };
